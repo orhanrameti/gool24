@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OrionLive — Stream</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+    .player-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
+    }
+    .player-toolbar a {
+      color: #8b949e;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .player-toolbar a:hover {
+      color: #3fb950;
+    }
+    .player-wrap {
+      width: 100%;
+      max-width: 1200px;
+      aspect-ratio: 16 / 9;
+      background: #161b22;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .player-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .player-wrap:fullscreen {
+      max-width: none;
+      aspect-ratio: auto;
+      border-radius: 0;
+    }
+    .player-wrap:fullscreen iframe {
+      width: 100%;
+      height: 100%;
+    }
+    .btn-fullscreen {
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid #3fb950;
+      border-radius: 8px;
+      background: transparent;
+      color: #3fb950;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-fullscreen:hover {
+      background: #3fb950;
+      color: #fff;
+    }
+    .no-url {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      color: #8b949e;
+      text-align: center;
+      padding: 2rem;
+    }
+    .player-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .player-links .btn-link {
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      background: #161b22;
+      color: #8b949e;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .player-links .btn-link:hover {
+      border-color: #3fb950;
+      color: #e6edf3;
+    }
+    .player-links .btn-link.active {
+      border-color: #3fb950;
+      color: #3fb950;
+      background: rgba(63, 185, 80, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="player-toolbar">
+    <a href="index.html">← Back to OrionLive</a>
+    <div class="player-links" id="playerLinks"></div>
+    <button type="button" class="btn-fullscreen" id="btnFullscreen">Fullscreen</button>
+  </div>
+  <div class="player-wrap" id="playerWrap">
+    <div class="no-url" id="noUrl">No stream URL. Open a match from the main page.</div>
+    <iframe id="streamFrame" style="display: none;" allowfullscreen></iframe>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      let url = params.get('url');
+      const matchId = params.get('matchId');
+      let linkNum = params.get('link') || '1';
+      const playerWrap = document.getElementById('playerWrap');
+      const streamFrame = document.getElementById('streamFrame');
+      const noUrl = document.getElementById('noUrl');
+      const btnFullscreen = document.getElementById('btnFullscreen');
+      const playerLinksEl = document.getElementById('playerLinks');
+
+      var match = null;
+      if (matchId && window.ORION_STREAMS) {
+        const data = window.ORION_STREAMS;
+        const all = (data.football || []).concat(data.nba || []);
+        match = all.find(function (m) { return m.id === matchId; });
+        if (!url && match) {
+          const key = 'link' + linkNum;
+          if (match[key]) url = match[key];
+        }
+      }
+
+      if (match && match.title) document.title = match.title + ' — OrionLive';
+
+      function setStream(src) {
+        if (src) {
+          noUrl.style.display = 'none';
+          streamFrame.style.display = 'block';
+          streamFrame.src = src;
+        } else {
+          streamFrame.style.display = 'none';
+          streamFrame.src = '';
+          noUrl.style.display = 'flex';
+        }
+      }
+
+      function updateHistory(link) {
+        if (matchId && window.history && window.history.replaceState) {
+          var u = new URL(window.location.href);
+          u.searchParams.set('matchId', matchId);
+          u.searchParams.set('link', link);
+          window.history.replaceState({}, '', u.toString());
+        }
+      }
+
+      if (match) {
+        [1, 2, 3, 4].forEach(function (num) {
+          var key = 'link' + num;
+          if (!match[key]) return;
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn-link' + (String(num) === linkNum ? ' active' : '');
+          btn.textContent = 'Link ' + num;
+          btn.dataset.link = num;
+          btn.dataset.url = match[key];
+          btn.addEventListener('click', function () {
+            var u = this.dataset.url;
+            linkNum = this.dataset.link;
+            setStream(u);
+            updateHistory(linkNum);
+            playerLinksEl.querySelectorAll('.btn-link').forEach(function (b) { b.classList.remove('active'); });
+            this.classList.add('active');
+          });
+          playerLinksEl.appendChild(btn);
+        });
+      }
+
+      if (url) {
+        noUrl.style.display = 'none';
+        streamFrame.style.display = 'block';
+        streamFrame.src = url;
+      }
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          playerWrap.requestFullscreen().catch(function (err) {
+            console.warn('Fullscreen error:', err);
+          });
+          btnFullscreen.textContent = 'Exit fullscreen';
+        } else {
+          document.exitFullscreen();
+          btnFullscreen.textContent = 'Fullscreen';
+        }
+      }
+
+      document.addEventListener('fullscreenchange', function () {
+        btnFullscreen.textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Fullscreen';
+      });
+
+      if (btnFullscreen) btnFullscreen.addEventListener('click', toggleFullscreen);
+
+      var AD_URL = 'https://www.effectivegatecpm.com/jevjka47b?key=720eea0f218beda4532041c38ac49fab';
+      var AD_COUNT_KEY = 'orionlive-ad-count';
+      var AD_DATE_KEY = 'orionlive-ad-date';
+
+      function getAdCount() {
+        try {
+          var today = new Date().toDateString();
+          var savedDate = localStorage.getItem(AD_DATE_KEY);
+          var savedCount = localStorage.getItem(AD_COUNT_KEY);
+          if (savedDate !== today) return 0;
+          var n = parseInt(savedCount, 10);
+          return isNaN(n) ? 0 : n;
+        } catch (e) { return 0; }
+      }
+
+      function incAdCount() {
+        try {
+          var c = getAdCount();
+          localStorage.setItem(AD_COUNT_KEY, String(c + 1));
+          localStorage.setItem(AD_DATE_KEY, new Date().toDateString());
+        } catch (e) {}
+      }
+
+      document.addEventListener('click', function () {
+        var count = getAdCount();
+        if (count % 2 === 0) window.open(AD_URL, '_blank', 'noopener,noreferrer');
+        incAdCount();
+      }, true);
+    })();
+  </script>
+</body>
+</html>

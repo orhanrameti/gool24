@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OrionLive — Football & NBA Streams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <span class="logo-icon">▶</span>
+        <span>OrionLive</span>
+      </a>
+      <nav class="nav">
+        <a href="#football" class="nav-link active" data-i18n="nav.football">Football</a>
+        <a href="#nba" class="nav-link" data-i18n="nav.nba">NBA</a>
+        <div class="lang-wrap">
+          <label for="langSelect" class="lang-label" data-i18n="nav.language">Language</label>
+          <select id="langSelect" class="lang-select" aria-label="Language">
+            <option value="en">English</option>
+            <option value="sq">Shqip</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="pt">Português</option>
+            <option value="tr">Türkçe</option>
+            <option value="ru">Русский</option>
+            <option value="zh">中文</option>
+            <option value="ar">العربية</option>
+            <option value="hi">हिन्दी</option>
+            <option value="nl">Nederlands</option>
+            <option value="pl">Polski</option>
+            <option value="el">Ελληνικά</option>
+          </select>
+        </div>
+      </nav>
+      <button class="menu-btn" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <p class="hero-badge" data-i18n="hero.badge">Streams</p>
+        <h1><span data-i18n="hero.title">Football & NBA</span><br><span data-i18n="hero.subtitle">On your screen</span></h1>
+        <p class="hero-desc" data-i18n="hero.desc">Click Watch to see your match.</p>
+      </div>
+    </section>
+
+    
+
+    <section id="football" class="section">
+      <div class="container">
+        <h2 class="section-title" data-i18n="section.football">Football</h2>
+        <div class="stream-table-wrap">
+          <table class="stream-table">
+            <thead>
+              <tr>
+                <th data-i18n="table.match">Match</th>
+                <th data-i18n="table.league">League</th>
+                <th class="th-watch" data-i18n="table.watch">Watch</th>
+              </tr>
+            </thead>
+            <tbody id="footballStreams">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="nba" class="section section-nba">
+      <div class="container">
+        <h2 class="section-title" data-i18n="section.nba">NBA</h2>
+        <div class="stream-table-wrap">
+          <table class="stream-table">
+            <thead>
+              <tr>
+                <th data-i18n="table.match">Match</th>
+                <th data-i18n="table.league">League</th>
+                <th class="th-watch" data-i18n="table.watch">Watch</th>
+              </tr>
+            </thead>
+            <tbody id="nbaStreams">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p data-i18n="footer.disclaimer">OrionLive — For information only. Streams depend on providers.</p>
+    </div>
+  </footer>
+
+  <div class="modal" id="streamModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-links">
+      <button class="modal-close" aria-label="Close">×</button>
+      <div class="modal-header">
+        <h3 id="modalTitle" data-i18n="modal.stream">Stream</h3>
+      </div>
+      <div class="modal-body">
+        <div class="modal-links-step" id="modalLinksStep">
+          <p class="modal-links-intro" data-i18n="links.choose">Choose a link to watch on the page:</p>
+          <div class="links-buttons" id="linksButtons">
+            <!-- Link 1, 2, 3, 4 filled by JS -->
+          </div>
+        </div>
+        <div class="modal-stream-step" id="modalStreamStep" style="display: none;">
+          <div class="stream-embed-in-modal" id="streamEmbedInModal"></div>
+          <button type="button" class="btn-back-links" id="btnBackLinks">← Choose another link</button>
+        </div>
+        <p class="stream-note stream-note-links" data-i18n="modal.note">In <strong>app.js</strong> set <strong>link1</strong>, <strong>link2</strong>, <strong>link3</strong>, <strong>link4</strong> for each match.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
