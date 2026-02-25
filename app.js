@@ -34,7 +34,7 @@
       'links.link2': 'Link 2',
       'links.link3': 'Link 3',
       'links.link4': 'Link 4',
-      'footer.disclaimer': 'OrionLive — For information only. Streams depend on providers.',
+      'footer.disclaimer': 'gol24 — For information only. Streams depend on providers.',
       'aria.close': 'Close',
       'aria.menu': 'Menu',
       'sport.football': 'Football',
@@ -156,7 +156,7 @@
     langSelect.value = currentLang;
     langSelect.addEventListener('change', function () {
       currentLang = this.value;
-      localStorage.setItem('orionlive-lang', currentLang);
+      localStorage.setItem('gol24-lang', currentLang);
       applyTranslations();
       renderFootball();
       renderNBA();
@@ -187,8 +187,8 @@
 
   // Ad: 1st click → ad, 2nd → direct, 3rd → ad, 4th → direct…
   var AD_URL = 'https://www.effectivegatecpm.com/jevjka47b?key=720eea0f218beda4532041c38ac49fab';
-  var AD_COUNT_KEY = 'orionlive-ad-count';
-  var AD_DATE_KEY = 'orionlive-ad-date';
+  var AD_COUNT_KEY = 'gol24-ad-count';
+  var AD_DATE_KEY = 'gol24-ad-date';
 
   function getAdCount() {
     try {

@@ -1,5 +1,5 @@
 /**
- * OrionLive — All matches here: one object per match with name and links.
+ * gol24 — All matches here: one object per match with name and links.
  * Edit only this file to add / remove / change matches.
  * Each match: id, title, league, link1, link2, link3, link4.
  */
