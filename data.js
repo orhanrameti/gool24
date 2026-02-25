@@ -1,7 +1,7 @@
 /**
- * OrionLive — Të gjitha ndeshjet këtu: një objekt për çdo ndeshje me emër dhe linke.
- * Ndrysho vetëm këtë file për të shtuar / fshirë / ndryshuar ndeshje.
- * Çdo ndeshje: id, title (emri), league, link1, link2, link3, link4.
+ * OrionLive — All matches here: one object per match with name and links.
+ * Edit only this file to add / remove / change matches.
+ * Each match: id, title, league, link1, link2, link3, link4.
  */
 window.ORION_STREAMS = {
   football: [
